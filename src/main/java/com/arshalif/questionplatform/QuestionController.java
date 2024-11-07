@@ -6,6 +6,8 @@ import com.arshalif.questionplatform.dto.VoteRequest;
 import com.arshalif.questionplatform.dto.VoteResponse;
 import com.arshalif.questionplatform.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -24,8 +26,13 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public QuestionResponse getQuestion(@PathVariable Long id) {
-        return questionService.getQuestion(id);
+    public ResponseEntity<?> getQuestion(@PathVariable Long id) {
+        QuestionResponse question = questionService.getQuestion(id);
+        if (question == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Question not found");
+        }
+        return ResponseEntity.ok(question);
+
     }
 
     @PostMapping("/vote")
